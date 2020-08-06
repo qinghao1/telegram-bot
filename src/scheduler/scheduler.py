@@ -1,5 +1,5 @@
 import os
-from datetime import date
+import datetime
 import logging
 
 from database.database import (
@@ -8,7 +8,8 @@ from database.database import (
     get_hidden_cuisines,
     update_subscribe_setting
 )
-from scheduler.scheduler_config import BREAKFAST_BROADCAST_TIME, DINNER_BROADCAST_TIME
+from scheduler.scheduler_config import BREAKFAST_BROADCAST_TIME, DINNER_BROADCAST_TIME, MENU_DOWNLOAD_TIME, NUM_DAYS_TO_DOWNLOAD
+from scraper.src.main import get_menu
 from util.const import BREAKFAST, DINNER
 from util.kb_mark_up import start_button_kb
 from util.messages import menu_msg
@@ -16,6 +17,13 @@ from util.util import parse_menu, localized_date_today
 
 
 def scheduler(job_queue):
+    # get tomorrow's menu
+
+    tomorrow_date = datetime.date.today() + datetime.timedelta(days=1)
+    tomorrow_date = datetime.datetime.combine(tomorrow_date, datetime.time.min)
+    job_queue.run_daily(callback=lambda: get_menu(tomorrow_date, NUM_DAYS_TO_DOWNLOAD),
+                        time=MENU_DOWNLOAD_TIME)
+
     # schedule breakfast and dinner broadcasts
 
     job_queue.run_daily(callback=meal_broadcast(BREAKFAST),
