@@ -10,14 +10,11 @@ from database.queries import (
     settings_query,
     settings_insert,
     settings_update,
-    settings_broadcast_subscribers_query
+    settings_broadcast_subscribers_query,
+    breakfast_opt_in_query,
+    dinner_opt_in_query,
 )
-from util.const import (
-    BREAKFAST,
-    DINNER,
-    HIDE_CUISINE,
-    BROADCAST_SUBSCRIPTION
-)
+from util.const import BREAKFAST, DINNER, HIDE_CUISINE, BROADCAST_SUBSCRIPTION
 
 # global connection
 _connection = None
@@ -34,12 +31,13 @@ def connect_database():
         # connect to the PostgreSQL server
         logging.info("Connecting to the PostgreSQL database...")
         print("Connecting to the PostgreSQL database...")
-        _connection = psycopg2.connect(host=os.getenv("RC_DINING_BOT_HOST"),
-                                       database=os.getenv("RC_DINING_BOT_DATABASE"),
-                                       user=os.getenv("RC_DINING_BOT_DB_USER"),
-                                       password=os.getenv("RC_DINING_BOT_DB_PASSWORD"),
-                                       connect_timeout=10
-                                       )
+        _connection = psycopg2.connect(
+            host=os.getenv("RC_DINING_BOT_HOST"),
+            database=os.getenv("RC_DINING_BOT_DATABASE"),
+            user=os.getenv("RC_DINING_BOT_DB_USER"),
+            password=os.getenv("RC_DINING_BOT_DB_PASSWORD"),
+            connect_timeout=10,
+        )
 
         # create a cursor
         cursor = _connection.cursor()
@@ -57,6 +55,8 @@ def connect_database():
         print(error)
         sys.exit(1)
 
+    return _connection
+
 
 def get_raw_menu(meal, date):
     # get menu from database
@@ -71,10 +71,10 @@ def get_raw_menu(meal, date):
 def insert_default_user_pref(chat_id):
     conn = connect_database()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute(settings_insert(), (chat_id, '{}', '{}'))
+    cursor.execute(settings_insert(), (chat_id, "{}", "{}"))
     conn.commit()
     cursor.close()
-    logging.info(f'New user recorded, chat_id: {chat_id}')
+    logging.info(f"New user recorded, chat_id: {chat_id}")
 
 
 def get_hidden_cuisines(chat_id):
@@ -99,7 +99,7 @@ def get_broadcast_subscribers(meal):
     # get broadcast subscribers from database based on meal
     conn = connect_database()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cursor.execute(settings_broadcast_subscribers_query(meal), ('true',))
+    cursor.execute(settings_broadcast_subscribers_query(meal), ("true",))
     data = cursor.fetchall()
 
     return data
@@ -146,6 +146,24 @@ def update_hidden_cuisine(chat_id, cuisine_to_hide):
     return hidden_cuisines
 
 
+def update_breakfast_opt_in(chat_id, date, option):
+    conn = connect_database()
+    cursor = conn.cursor()
+    cursor.execute(breakfast_opt_in_query(), (chat_id, date, option))
+    conn.commit()
+    cursor.close()
+    logging.info(f"Breakfast Opt-in: {chat_id} chose {option} on {date}")
+
+
+def update_dinner_opt_in(chat_id, date, option):
+    conn = connect_database()
+    cursor = conn.cursor()
+    cursor.execute(dinner_opt_in_query(), (chat_id, date, option))
+    conn.commit()
+    cursor.close()
+    logging.info(f"Dinner Opt-in: {chat_id} chose {option} on {date}")
+
+
 def update_subscribe_setting(chat_id, meal):
     # update database
     conn = connect_database()
@@ -161,6 +179,12 @@ def update_subscribe_setting(chat_id, meal):
     logging.info(f"{chat_id}: subscription status updated")
 
     if meal == BREAKFAST:
-        return not setting[BREAKFAST + BROADCAST_SUBSCRIPTION], setting[DINNER + BROADCAST_SUBSCRIPTION]
+        return (
+            not setting[BREAKFAST + BROADCAST_SUBSCRIPTION],
+            setting[DINNER + BROADCAST_SUBSCRIPTION],
+        )
     else:
-        return setting[BREAKFAST + BROADCAST_SUBSCRIPTION], not setting[DINNER + BROADCAST_SUBSCRIPTION]
+        return (
+            setting[BREAKFAST + BROADCAST_SUBSCRIPTION],
+            not setting[DINNER + BROADCAST_SUBSCRIPTION],
+        )

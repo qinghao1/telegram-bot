@@ -13,6 +13,8 @@ psycopg2-binary = "*"
 python-dotenv = "*"
 dateparser = "*"
 requests = "*"
+tabula-py = "*"
+lru-dict = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

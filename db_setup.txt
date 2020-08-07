@@ -1,3 +1,8 @@
 CREATE TABLE breakfast (date DATE PRIMARY KEY, self_service TEXT [], western TEXT [], dim_sum_congee_noodle TEXT [], asian TEXT [], asian_vegetarian TEXT [], malay TEXT [], halal_vegetarian TEXT [], grab_and_go TEXT[]);
 CREATE TABLE dinner (date DATE PRIMARY KEY, self_service TEXT [], western TEXT [], noodle TEXT [], asian TEXT [], vegetarian TEXT [], malay TEXT [], soup TEXT [], indian TEXT[]);
-CREATE TABLE user_pref (chat_id BIGINT PRIMARY KEY, favorites TEXT [], hidden TEXT [], breakfast_subscribed BOOLEAN DEFAULT FALSE, dinner_subscribed BOOLEAN DEFAULT FALSE);
+CREATE TABLE user_pref (chat_id BIGINT PRIMARY KEY, favorites TEXT [], hidden TEXT [], breakfast_subscribed BOOLEAN DEFAULT TRUE, dinner_subscribed BOOLEAN DEFAULT TRUE);
+
+CREATE TYPE breakfast_options AS ENUM ('western', 'dim_sum_congee_noodle', 'asian', 'asian_vegetarian', 'malay', 'halal_vegetarian', 'opt_out');
+CREATE TYPE dinner_options AS ENUM ('western', 'noodle', 'asian', 'vegetarian', 'malay', 'indian', 'opt_out');
+CREATE TABLE breakfast_opt_in (chat_id BIGINT, date DATE, option breakfast_options, PRIMARY KEY (chat_id, date));
+CREATE TABLE dinner_opt_in (chat_id BIGINT, date DATE, option dinner_options, PRIMARY KEY (chat_id, date));

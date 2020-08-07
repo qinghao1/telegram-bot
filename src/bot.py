@@ -4,20 +4,17 @@ import os
 from dotenv import load_dotenv
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 
-from commands.general import (
-    handle_start,
-    handle_help,
-    handle_error
-)
+from commands.general import handle_start, handle_help, handle_error
 from commands.meal import handle_menu
 from commands.settings import (
     handle_settings,
     handle_hidden_cuisine,
     handle_hide_cuisine,
     handle_subscribe,
-    handle_notification
+    handle_notification,
 )
 from commands.others import handle_rv_count
+from commands.opt_in import handle_opt_in
 from database.database import connect_database
 from scheduler.scheduler import scheduler
 from util.const import (
@@ -29,20 +26,22 @@ from util.const import (
     HIDE_CUISINE,
     SET_BREAKFAST_NOTIFICATION,
     SET_DINNER_NOTIFICATION,
-    RV_COUNT
+    RV_COUNT,
 )
 
 # Enable logging
-logging.basicConfig(filename="logging.log",
-                    filemode='a',
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(
+    filename="logging.log",
+    filemode="a",
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
 
 
 def main():
     """Start the bot."""
     # Set use_context=True to use the new context based callbacks
-    updater = Updater(token=os.getenv('RC_DINING_BOT_TOKEN'), use_context=True)
+    updater = Updater(token=os.getenv("RC_DINING_BOT_TOKEN"), use_context=True)
 
     # Get the dispatcher to
     dispatcher = updater.dispatcher
@@ -55,21 +54,49 @@ def main():
     dispatcher.add_handler(CommandHandler(SETTINGS, handle_settings))
     dispatcher.add_handler(CommandHandler(HIDE_CUISINE, handle_hidden_cuisine))
     dispatcher.add_handler(CommandHandler(HIDE_CUISINE, handle_hidden_cuisine))
-    dispatcher.add_handler(CommandHandler(SET_BREAKFAST_NOTIFICATION, handle_subscribe(meal=BREAKFAST)))
-    dispatcher.add_handler(CommandHandler(SET_DINNER_NOTIFICATION, handle_subscribe(meal=DINNER)))
+    dispatcher.add_handler(
+        CommandHandler(SET_BREAKFAST_NOTIFICATION, handle_subscribe(meal=BREAKFAST))
+    )
+    dispatcher.add_handler(
+        CommandHandler(SET_DINNER_NOTIFICATION, handle_subscribe(meal=DINNER))
+    )
     dispatcher.add_handler(CommandHandler(RV_COUNT, handle_rv_count))
 
     # add callback_query handler
-    dispatcher.add_handler(CallbackQueryHandler(handle_start, pattern='^start.home'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_help, pattern='^start.help'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_menu(meal=BREAKFAST), pattern='^menu.breakfast'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_menu(meal=DINNER), pattern='^menu.dinner'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_settings, pattern='^settings.home'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_hidden_cuisine, pattern='^settings.hidden'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_notification, pattern='^settings.notification'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_subscribe(BREAKFAST), pattern='^settings.breakfast_subscribe'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_subscribe(DINNER), pattern='^settings.dinner_subscribe'))
-    dispatcher.add_handler(CallbackQueryHandler(handle_hide_cuisine, pattern='^menu.+'))
+    dispatcher.add_handler(CallbackQueryHandler(handle_start, pattern="^start.home"))
+    dispatcher.add_handler(CallbackQueryHandler(handle_help, pattern="^start.help"))
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_menu(meal=BREAKFAST), pattern="^menu.breakfast")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_menu(meal=DINNER), pattern="^menu.dinner")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_settings, pattern="^settings.home")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_hidden_cuisine, pattern="^settings.hidden")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_notification, pattern="^settings.notification")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(
+            handle_subscribe(BREAKFAST), pattern="^settings.breakfast_subscribe"
+        )
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(
+            handle_subscribe(DINNER), pattern="^settings.dinner_subscribe"
+        )
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_opt_in(BREAKFAST), pattern="^opt_in.breakfast.+")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_opt_in(DINNER), pattern="^opt_in.dinner.+")
+    )
+    dispatcher.add_handler(CallbackQueryHandler(handle_hide_cuisine, pattern="^menu.+"))
 
     # log all errors
     dispatcher.add_error_handler(handle_error)
@@ -89,7 +116,7 @@ def main():
     updater.idle()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.info("Bot is running...")
     print("Bot is running...")
     load_dotenv()  # for environment file

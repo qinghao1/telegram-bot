@@ -5,7 +5,7 @@ change of data format in end of 2019.
 It now comes with a Graphic User Interface design.
 
 ## Functionality
-1. Check daily meal menus: `/breakfast` and `/dinner` 
+1. Check daily meal menus: `/breakfast` and `/dinner`
     * Note: command with payload display menu of the day specified.
     * e.g. `/breakfast tomorrow` or `/dinner yesterday`
 2. Check settings: `/settings`
@@ -33,7 +33,7 @@ It now comes with a Graphic User Interface design.
 ## Database Setup Instructions (PostgreSQL for local setup)
 1. Download and install [PostgreSQL](https://www.postgresql.org/download/)
 3. Create user for the bot to access the database with. `createuser --interactive --pwprompt`
-4. Create database for the bot. `createdb -0 name_of_user name_of_db;`
+4. Create database for the bot. `createdb -O name_of_user name_of_db;`
 5. Launch psql in database mode.
 6. Create tables using queries in db_setup.txt.
 7. Grant permissions if necessary for every table.
