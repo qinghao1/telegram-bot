@@ -48,6 +48,7 @@ VALID_RCS = {
     "rvrc": "RVRC",
 }
 
+
 @run_async
 def handle_rc_select(update, context):
     chat_id = update.effective_chat.id

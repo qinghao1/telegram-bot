@@ -42,7 +42,7 @@ class CalendarParser(HTMLParser):
             for name, value in attrs:
                 if name == "href":
                     # Insert s to make it https
-                    https_string = value[:4] + 's' + value[4:]
+                    https_string = value[:4] + "s" + value[4:]
                     self._current_href = https_string
 
     def handle_endtag(self, tag):
