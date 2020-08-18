@@ -1,4 +1,5 @@
 import telegram
+from telegram.ext import run_async
 
 from database.database import get_rc_for_user, insert_user_rc
 from util.kb_mark_up import start_kb, start_button_kb, choose_rc_kb
@@ -6,6 +7,7 @@ from util.messages import welcome_msg, help_msg, welcome_msg_with_rc
 import logging
 
 
+@run_async
 def handle_start(update, context):
     chat_id = update.effective_chat.id
     rc = get_rc_for_user(chat_id)
@@ -33,6 +35,7 @@ def handle_start(update, context):
         )
 
 
+@run_async
 def handle_help(update, context):
     if update.callback_query is not None:
         context.bot.edit_message_text(
