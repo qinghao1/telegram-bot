@@ -103,6 +103,7 @@ def handle_notification(update, context):
 def handle_subscribe(meal):
     assert meal == BREAKFAST or meal == DINNER, "Meal input is incorrect."
 
+    @run_async
     def toggle_subscribe(update, context):
         chat_id = update.effective_chat.id
         bf_sub, dn_sub = update_subscribe_setting(chat_id=chat_id, meal=meal)

@@ -1,4 +1,5 @@
 import telegram
+from telegram.ext import run_async
 
 from util.kb_mark_up import start_button_kb
 from database.database import (
@@ -11,6 +12,7 @@ from util.formatting import capitalize, normalize
 
 
 def handle_opt_in(meal):
+    @run_async
     def handle_opt_in_inner(update, context):
         chat_id = update.effective_chat.id
         chosen_option, date = update.callback_query.data.split(".")[-2:]
@@ -46,7 +48,7 @@ VALID_RCS = {
     "rvrc": "RVRC",
 }
 
-
+@run_async
 def handle_rc_select(update, context):
     chat_id = update.effective_chat.id
     chosen_rc = update.callback_query.data.split(".")[-1]
