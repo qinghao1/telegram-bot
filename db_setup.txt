@@ -6,3 +6,6 @@ CREATE TYPE breakfast_options AS ENUM ('western', 'dim_sum_congee_noodle', 'asia
 CREATE TYPE dinner_options AS ENUM ('western', 'noodle', 'asian', 'vegetarian', 'malay', 'indian', 'opt_out');
 CREATE TABLE breakfast_opt_in (chat_id BIGINT, date DATE, option breakfast_options, PRIMARY KEY (chat_id, date));
 CREATE TABLE dinner_opt_in (chat_id BIGINT, date DATE, option dinner_options, PRIMARY KEY (chat_id, date));
+
+CREATE TYPE rc_type AS ENUM ('cinnamon', 'tembusu', 'capt', 'rc4', 'rvrc');
+CREATE TABLE user_rc (chat_id BIGINT PRIMARY KEY, rc rc_type);

@@ -13,6 +13,8 @@ from database.queries import (
     settings_broadcast_subscribers_query,
     breakfast_opt_in_query,
     dinner_opt_in_query,
+    user_rc_query,
+    user_rc_insert,
 )
 from util.const import BREAKFAST, DINNER, HIDE_CUISINE, BROADCAST_SUBSCRIPTION
 
@@ -112,6 +114,7 @@ def get_subscribe_setting(chat_id):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(settings_query(), (chat_id,))
     data = cursor.fetchone()
+    cursor.close()
 
     # default values
     if data is None:
@@ -188,3 +191,21 @@ def update_subscribe_setting(chat_id, meal):
             setting[BREAKFAST + BROADCAST_SUBSCRIPTION],
             not setting[DINNER + BROADCAST_SUBSCRIPTION],
         )
+
+
+def get_rc_for_user(chat_id):
+    conn = connect_database()
+    cursor = conn.cursor()
+    cursor.execute(user_rc_query(), (chat_id,))
+    data = cursor.fetchone()
+    cursor.close()
+    return data
+
+def insert_user_rc(chat_id, rc):
+    conn = connect_database()
+    cursor = conn.cursor()
+    cursor.execute(user_rc_insert(), (chat_id, rc))
+    conn.commit()
+    cursor.close()
+    logging.info(f"{chat_id}'s rc set as {rc}")
+

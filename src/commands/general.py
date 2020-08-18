@@ -1,25 +1,34 @@
 import telegram
 
-from util.kb_mark_up import start_kb, start_button_kb
-from util.messages import welcome_msg, help_msg
+from database.database import get_rc_for_user, insert_user_rc
+from util.kb_mark_up import start_kb, start_button_kb, choose_rc_kb
+from util.messages import welcome_msg, help_msg, welcome_msg_with_rc
 import logging
 
 
 def handle_start(update, context):
+    chat_id = update.effective_chat.id
+    rc = get_rc_for_user(chat_id)
+    if not rc:
+        text=welcome_msg_with_rc(update.effective_chat.first_name)
+        reply_markup=choose_rc_kb()
+    else:
+        text=welcome_msg(update.effective_chat.first_name)
+        reply_markup=start_kb()
     if update.callback_query is not None:
         context.bot.edit_message_text(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
-            text=welcome_msg(update.effective_chat.first_name),
-            reply_markup=start_kb(),
+            text=text,
+            reply_markup=reply_markup,
             parse_mode=telegram.ParseMode.HTML,
         )
         context.bot.answer_callback_query(update.callback_query.id)
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=welcome_msg(update.effective_chat.first_name),
-            reply_markup=start_kb(),
+            text=text,
+            reply_markup=reply_markup,
             parse_mode=telegram.ParseMode.HTML,
         )
 

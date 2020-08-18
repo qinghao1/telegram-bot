@@ -17,6 +17,17 @@ def start_kb():
     return InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
 
 
+def choose_rc_kb():
+    button_list = [
+        InlineKeyboardButton(text="Cinnamon", callback_data="rc_select.cinnamon"),
+        InlineKeyboardButton(text="Tembusu", callback_data="rc_select.tembusu"),
+        InlineKeyboardButton(text="CAPT", callback_data="rc_select.capt"),
+        InlineKeyboardButton(text="RC4", callback_data="rc_select.rc4"),
+        InlineKeyboardButton(text="RVRC", callback_data="rc_select.rvrc"),
+    ]
+    return InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
+
+
 def start_button_kb():
     return InlineKeyboardMarkup(build_menu([start_button], n_cols=1))
 

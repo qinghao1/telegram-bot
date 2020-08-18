@@ -68,3 +68,17 @@ def settings_update(setting):
         setting=sql.Identifier(setting),
         pkey=sql.Identifier("chat_id"),
     )
+
+
+def user_rc_query():
+    return sql.SQL("SELECT {column} FROM {table} WHERE {pkey} = %s;").format(
+        column=sql.Identifier("rc"),
+        table=sql.Identifier("user_rc"),
+        pkey=sql.Identifier("chat_id"),
+    )
+
+
+def user_rc_insert():
+    return sql.SQL("INSERT INTO {table} VALUES (%s, %s);").format(
+        table=sql.Identifier("user_rc"),
+    )

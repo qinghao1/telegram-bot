@@ -4,8 +4,16 @@ from util.const import COMMAND_LIST
 # general messages
 def welcome_msg(user_first_name):
     return (
-        f"<b>Hello, {user_first_name}! Welcome back! What do you like to check?</b>\n\n"
+        f"<b>Welcome back, {user_first_name}!</b>\n\n"
         f"<i>Press help button or use /help command to view different commands.</i>"
+    )
+
+
+def welcome_msg_with_rc(user_first_name):
+    return (
+        f"<b>Hello, {user_first_name}!</b>\n\n"
+        f"<i>Press help button or use /help command to view different commands.</i>\n\n"
+        f"<b>Please choose your RC below.</b>"
     )
 
 

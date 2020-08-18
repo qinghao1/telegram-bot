@@ -14,7 +14,7 @@ from commands.settings import (
     handle_notification,
 )
 from commands.others import handle_rv_count
-from commands.opt_in import handle_opt_in
+from commands.opt_in import handle_opt_in, handle_rc_select
 from database.database import connect_database
 from scheduler.scheduler import scheduler
 from util.const import (
@@ -95,6 +95,9 @@ def main():
     )
     dispatcher.add_handler(
         CallbackQueryHandler(handle_opt_in(DINNER), pattern="^opt_in.dinner.+")
+    )
+    dispatcher.add_handler(
+        CallbackQueryHandler(handle_rc_select, pattern="^rc_select.+")
     )
     dispatcher.add_handler(CallbackQueryHandler(handle_hide_cuisine, pattern="^menu.+"))
 
