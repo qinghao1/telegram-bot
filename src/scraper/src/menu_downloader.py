@@ -28,14 +28,7 @@ def construct_menu_url(date):
 
 def send_request_for_menu_pdf(url):
     # Spoof the user agent to (hopefully) get past Incapsula
-    user_agent = (
-        "Mozilla/5.0 (Windows NT 6.1) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/35.0.1916.153 "
-        "Safari/537.36 "
-        "SE 2.X "
-        "MetaSr 1.0"
-    )
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
     headers = {"User-Agent": user_agent}
     try:
         response = requests.get(url, timeout=10, headers=headers)
