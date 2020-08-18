@@ -49,7 +49,7 @@ def send_request_for_menu_pdf(url):
 
     # Handle possible errors
     status_code = response.status_code
-    if status_code != 200:
+    if status_code != 200  and not "Request unsuccessful" in response.text:
         logging.error("%s returned %d", url, status_code)
         logging.error("Response: %s", response.content)
         return None
