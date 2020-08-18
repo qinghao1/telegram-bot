@@ -201,6 +201,7 @@ def get_rc_for_user(chat_id):
     cursor.close()
     return data
 
+
 def insert_user_rc(chat_id, rc):
     conn = connect_database()
     cursor = conn.cursor()
@@ -208,4 +209,3 @@ def insert_user_rc(chat_id, rc):
     conn.commit()
     cursor.close()
     logging.info(f"{chat_id}'s rc set as {rc}")
-

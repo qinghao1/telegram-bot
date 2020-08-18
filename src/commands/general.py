@@ -10,11 +10,11 @@ def handle_start(update, context):
     chat_id = update.effective_chat.id
     rc = get_rc_for_user(chat_id)
     if not rc:
-        text=welcome_msg_with_rc(update.effective_chat.first_name)
-        reply_markup=choose_rc_kb()
+        text = welcome_msg_with_rc(update.effective_chat.first_name)
+        reply_markup = choose_rc_kb()
     else:
-        text=welcome_msg(update.effective_chat.first_name)
-        reply_markup=start_kb()
+        text = welcome_msg(update.effective_chat.first_name)
+        reply_markup = start_kb()
     if update.callback_query is not None:
         context.bot.edit_message_text(
             chat_id=update.effective_chat.id,

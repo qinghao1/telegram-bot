@@ -1,7 +1,11 @@
 import telegram
 
 from util.kb_mark_up import start_button_kb
-from database.database import update_breakfast_opt_in, update_dinner_opt_in, insert_user_rc
+from database.database import (
+    update_breakfast_opt_in,
+    update_dinner_opt_in,
+    insert_user_rc,
+)
 from util.const import BREAKFAST, DINNER
 from util.formatting import capitalize, normalize
 
@@ -34,7 +38,15 @@ def handle_opt_in(meal):
     return handle_opt_in_inner
 
 
-VALID_RCS = {'cinnamon': 'Cinnamon', 'tembusu': 'Tembusu', 'capt': 'CAPT', 'rc4': 'RC4', 'rvrc':'RVRC'}
+VALID_RCS = {
+    "cinnamon": "Cinnamon",
+    "tembusu": "Tembusu",
+    "capt": "CAPT",
+    "rc4": "RC4",
+    "rvrc": "RVRC",
+}
+
+
 def handle_rc_select(update, context):
     chat_id = update.effective_chat.id
     chosen_rc = update.callback_query.data.split(".")[-1]
