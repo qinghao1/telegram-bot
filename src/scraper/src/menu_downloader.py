@@ -64,6 +64,8 @@ def download_menu_pdf(date, filepath=None):
 
     # Send request
     url = construct_menu_url(date)
+    if not url:
+        return None
     response = send_request_for_menu_pdf(url)
 
     # If request is not successful, abort
